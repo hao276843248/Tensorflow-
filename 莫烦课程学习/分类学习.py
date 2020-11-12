@@ -39,17 +39,22 @@ if __name__ == '__main__':
 
     cross_entropy = tf.reduce_mean(-tf.reduce_sum(ys * tf.log(prediction), reduction_indices=[1]))  # loss
 
-    train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+    train_step = tf.train.GradientDescentOptimizer(0.1).minimize(cross_entropy)
 
     sess = tf.Session()
     sess.run(tf.initialize_all_variables())
 
-    for i in range(1000):
+    for i in range(20000):
         # 提取100个数据
         batch_xs, batch_ys = mnist.train.next_batch(100)
         result = sess.run(train_step, feed_dict={
             xs: batch_xs, ys: batch_ys
         })
         if i % 50 == 0:
-            # print(sess.run(result), )
+            print("损失：",sess.run(cross_entropy, feed_dict={
+                xs: batch_xs, ys: batch_ys
+            }))
             print(compute_accuracy(mnist.test.images, mnist.test.labels))
+            # print(sess.run(prediction, feed_dict={
+            #     xs: batch_xs
+            # }))
